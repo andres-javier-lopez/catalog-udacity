@@ -1,0 +1,17 @@
+<html>
+<head>
+    <title>Welcome to my Catalog!</title>
+</head>
+<body>
+    <h1>Item Catalog</h1>
+    <div>
+    {% block content %}
+        <ul>
+        {% for item in catalog %}
+            <li>{{item.name}}</li>
+        {% endfor %}
+        </ul>
+    {% endblock %}
+    </div>
+</body>
+</html>

@@ -1,4 +1,6 @@
 #coding: utf-8
+import flask
+
 import database
 
 def load_controllers(app):
@@ -20,9 +22,4 @@ def load_controllers(app):
         db_session = database.get_session()
         catalog = db_session.query(database.Item).all()
 
-        items = '<ul>'
-        for item in catalog:
-            items += '<li>%s</li>' % item.name
-        items += '</ul>'
-
-        return items
+        return flask.render_template('catalog.html', catalog=catalog)
