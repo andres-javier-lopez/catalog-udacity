@@ -1,4 +1,5 @@
 #coding: utf-8
+import database
 
 def load_controllers(app):
     '''Defines the controllers for the catalog module.
@@ -16,5 +17,12 @@ def load_controllers(app):
         Read the database and obtain the item catalog, then loads it into the
         catalog template.
         '''
-        return 'This will be the catalog'
+        db_session = database.get_session()
+        catalog = db_session.query(database.Item).all()
 
+        items = '<ul>'
+        for item in catalog:
+            items += '<li>%s</li>' % item.name
+        items += '</ul>'
+
+        return items
