@@ -1,8 +1,9 @@
 {% extends "main.html" %}
 {% block content %}
+    <h2>{{category.name}}</h2>
     <ul>
     {% for item in catalog %}
-        <li>{{item.name}}</li>
+        <li><a href="{{ url_for('show_catalog_item', category_name=category.name, item_id=item.id) }}">{{item.name}}</a></li>
     {% endfor %}
     </ul>
 {% endblock %}

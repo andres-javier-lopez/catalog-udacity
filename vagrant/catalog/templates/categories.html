@@ -1,0 +1,9 @@
+{% extends "main.html" %}
+{% block content %}
+    <h2>Categories</h2>
+    <ul>
+    {% for category in catalog %}
+        <li><a href="{{ url_for('show_category_items', category_name=category.name) }}">{{category.name}}</a></li>
+    {% endfor %}
+    </ul>
+{% endblock %}
