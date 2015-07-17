@@ -81,8 +81,8 @@ def load_controllers(app):
             item_id: Id of the item that will be edited.
 
         Returns:
-            An html form if its a GET request, or redirects to catalog if a POST
-            request.
+            An html form if its a GET request, or redirects to the item if is a
+            POST request.
         """
         db_session = database.get_session()
         item = db_session.query(database.Item).get(item_id)
@@ -99,3 +99,34 @@ def load_controllers(app):
             return flask.redirect(flask.url_for('show_catalog_item',
                                                 category_name=category_name,
                                                 item_id=item_id))
+
+    @app.route('/catalog/<string:category_name>/<int:item_id>/delete',
+               methods=['GET', 'POST'])
+    def delete_catalog_item(category_name, item_id):
+        """Allows the deletion of a catalog item.
+
+        Shows a delete confirmation in a GET request, and deletes the item on a
+        POST request.
+
+        Args:
+            category_name: Name of the current category.
+            item_id: Id of the item that will be deleted.
+
+        Returns:
+            An html form if its a GET request, or redirects to the item if is a
+            POST request.
+        """
+        db_session = database.get_session()
+        item = db_session.query(database.Item).get(item_id)
+        if item is None:
+            flask.abort(404)
+
+        if flask.request.method == 'GET':
+            return flask.render_template('delete_item.html',
+                                         category_name=category_name,
+                                         item=item)
+        elif  flask.request.method == 'POST':
+            db_session.delete(item)
+            db_session.commit()
+            return flask.redirect(flask.url_for('show_category_items',
+                                                category_name=category_name))

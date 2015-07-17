@@ -1,0 +1,8 @@
+{% extends "main.html" %}
+{% block content %}
+    <form method="POST" action="{{ url_for('delete_catalog_item', category_name=category_name, item_id=item.id) }}">
+        <p>Are you sure you want to delete {{item.name}}?</p>
+        <button class="btn btn-default" type="submit">Yes</button>
+        <a class="btn btn-default" href="{{ url_for('show_catalog_item', category_name=category_name, item_id=item.id) }}">No</a>
+    </form>
+{% endblock %}
