@@ -53,16 +53,49 @@ def load_controllers(app):
         returns the template with the item information.
 
         Args:
-            category_name: Name of the current category. Its not used.
+            category_name: Name of the current category.
             item_id: Id of the item that will be looked up in the catalog.
 
         Returns:
             Html with the item information.
         """
-        _ = category_name
         db_session = database.get_session()
         item = db_session.query(database.Item).get(item_id)
         if item is not None:
-            return flask.render_template('item.html', item=item)
+            return flask.render_template('item.html',
+                                         category_name=category_name,
+                                         item=item)
         else:
             flask.abort(404)
+
+    @app.route('/catalog/<string:category_name>/<int:item_id>/edit',
+               methods=['GET', 'POST'])
+    def edit_catalog_item(category_name, item_id):
+        """Allows the edition of a catalog item.
+
+        Shows an edit form if is a GET request, and changes the information of
+        the item if is a POST request.
+
+        Args:
+            category_name: Name of the current category.
+            item_id: Id of the item that will be edited.
+
+        Returns:
+            An html form if its a GET request, or redirects to catalog if a POST
+            request.
+        """
+        db_session = database.get_session()
+        item = db_session.query(database.Item).get(item_id)
+        if item is None:
+            flask.abort(404)
+
+        if flask.request.method == 'GET':
+            return flask.render_template('edit_item.html',
+                                         category_name=category_name,
+                                         item=item)
+        elif flask.request.method == 'POST':
+            item.name = flask.request.form['name']
+            db_session.commit()
+            return flask.redirect(flask.url_for('show_catalog_item',
+                                                category_name=category_name,
+                                                item_id=item_id))
