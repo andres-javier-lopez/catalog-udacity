@@ -39,8 +39,8 @@ def load_controllers(app):
         """
         db_session = database.get_session()
         category = db_session.query(database.Category).filter(
-                database.Category.name == category_name
-            ).one()
+            database.Category.name == category_name
+        ).one()
 
         return flask.render_template('catalog.html', category=category,
                                      catalog=category.items)
@@ -67,6 +67,36 @@ def load_controllers(app):
                                          item=item)
         else:
             flask.abort(404)
+
+    @app.route('/catalog/<string:category_name>/new', methods=['GET', 'POST'])
+    def new_catalog_item(category_name):
+        """Adds a new item to the chosen category.
+
+        Shows a insert form if is a GET request, and inserts a new item to the
+        database on a POST request.
+
+        Args:
+            category_name: Name of the category which the new item will belong.
+
+        Returns:
+            An html form if is a GET request, or redirects to the catalog if
+            ifs a POST request.
+        """
+
+        if flask.request.method == 'GET':
+            return flask.render_template('new_item.html',
+                                         category_name=category_name)
+        elif flask.request.method == 'POST':
+            db_session = database.get_session()
+            category = db_session.query(database.Category).filter(
+                database.Category.name == category_name
+            ).one()
+            item = database.Item(name=flask.request.form['name'],
+                                 category_id=category.id)
+            db_session.add(item)
+            db_session.commit()
+            return flask.redirect(flask.url_for('show_category_items',
+                                                category_name=category_name))
 
     @app.route('/catalog/<string:category_name>/<int:item_id>/edit',
                methods=['GET', 'POST'])
