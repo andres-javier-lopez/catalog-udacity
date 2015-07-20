@@ -6,7 +6,16 @@
 <body>
     <div class="main container">
         <header class="row">
-            <div class="col-md-12"><h1>Item Catalog</h1></div>
+            <div class="col-md-10"><h1>Item Catalog</h1></div>
+            <div class="col-md-2">
+            <br/>
+            {% if session['credentials']: %}
+            <p>{{ session['username'] }}</p>
+            <a href="{{ url_for('gdisconnect') }}">Logout</a>
+            {% else %}
+            <a href="{{ url_for('showLogin') }}">Login</a>
+            {% endif %}
+            </div>
         </header>
         {% block content %}
         {% endblock %}
