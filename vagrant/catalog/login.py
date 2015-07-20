@@ -134,13 +134,15 @@ def load_controllers(app):
             del login_session['email']
             del login_session['picture']
 
-            response = flask.make_response(
-                json.dumps('Successfully disconnected.'), 200
-            )
-            response.headers['Content-Type'] = 'application/json'
-            return response
+            return flask.redirect(flask.url_for('show_catalog'))
         else:
             # For whatever reason, the given token was invalid.
+            del login_session['credentials']
+            del login_session['gplus_id']
+            del login_session['username']
+            del login_session['email']
+            del login_session['picture']
+
             response = flask.make_response(
                 json.dumps('Failed to revoke token for given user.'), 400
             )

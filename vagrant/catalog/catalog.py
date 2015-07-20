@@ -83,6 +83,12 @@ def load_controllers(app):
             ifs a POST request.
         """
 
+        try:
+            if not flask.session['credentials']:
+                flask.abort(403)
+        except KeyError:
+            flask.abort(403)
+
         if flask.request.method == 'GET':
             return flask.render_template('new_item.html',
                                          category_name=category_name)
@@ -114,6 +120,13 @@ def load_controllers(app):
             An html form if its a GET request, or redirects to the item if is a
             POST request.
         """
+
+        try:
+            if not flask.session['credentials']:
+                flask.abort(403)
+        except KeyError:
+            flask.abort(403)
+
         db_session = database.get_session()
         item = db_session.query(database.Item).get(item_id)
         if item is None:
@@ -146,6 +159,13 @@ def load_controllers(app):
             An html form if its a GET request, or redirects to the item if is a
             POST request.
         """
+
+        try:
+            if not flask.session['credentials']:
+                flask.abort(403)
+        except KeyError:
+            flask.abort(403)
+
         db_session = database.get_session()
         item = db_session.query(database.Item).get(item_id)
         if item is None:

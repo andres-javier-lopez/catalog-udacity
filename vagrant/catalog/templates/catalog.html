@@ -6,5 +6,7 @@
         <li><a href="{{ url_for('show_catalog_item', category_name=category.name, item_id=item.id) }}">{{item.name}}</a></li>
     {% endfor %}
     </ul>
+    {% if session['credentials']: %}
     <a href="{{ url_for('new_catalog_item', category_name=category.name) }}" class="btn btn-default">Create new</a>
+    {% endif %}
 {% endblock %}
