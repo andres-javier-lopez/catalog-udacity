@@ -16,6 +16,7 @@ class Category(Base):
     id = sqla.Column(sqla.Integer, primary_key=True)
     name = sqla.Column(sqla.String(100), nullable=False)
     items = orm.relationship('Item', backref="category")
+    gplus_id = sqla.Column(sqla.String)
 
 class Item(Base):
     """Table that contains the items from the catalog.
@@ -30,6 +31,7 @@ class Item(Base):
     id = sqla.Column(sqla.Integer, primary_key=True)
     name = sqla.Column(sqla.String(100), nullable=False)
     category_id = sqla.Column(sqla.ForeignKey('categories.id'), nullable=False)
+    gplus_id = sqla.Column(sqla.String)
 
 
 def get_engine():

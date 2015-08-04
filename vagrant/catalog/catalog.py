@@ -83,10 +83,10 @@ def load_controllers(app):
             ifs a POST request.
         """
 
-        try:
+        if 'credentials' in flask.session:
             if not flask.session['credentials']:
                 flask.abort(403)
-        except KeyError:
+        else:
             flask.abort(403)
 
         if flask.request.method == 'GET':
@@ -97,8 +97,12 @@ def load_controllers(app):
             category = db_session.query(database.Category).filter(
                 database.Category.name == category_name
             ).one()
-            item = database.Item(name=flask.request.form['name'],
-                                 category_id=category.id)
+            try:
+                item = database.Item(name=flask.request.form['name'],
+                                     gplus_id=flask.session['gplus_id'],
+                                     category_id=category.id)
+            except KeyError:
+                flask.abort(401)
             db_session.add(item)
             db_session.commit()
             return flask.redirect(flask.url_for('show_category_items',
@@ -121,10 +125,10 @@ def load_controllers(app):
             POST request.
         """
 
-        try:
+        if 'credentials' in flask.session:
             if not flask.session['credentials']:
                 flask.abort(403)
-        except KeyError:
+        else:
             flask.abort(403)
 
         db_session = database.get_session()
@@ -133,11 +137,23 @@ def load_controllers(app):
             flask.abort(404)
 
         if flask.request.method == 'GET':
-            return flask.render_template('edit_item.html',
-                                         category_name=category_name,
-                                         item=item)
+            try:
+                if flask.session['gplus_id'] == item.gplus_id:
+                    return flask.render_template('edit_item.html',
+                                                 category_name=category_name,
+                                                 item=item)
+                else:
+                    flask.abort(404)
+            except KeyError:
+                flask.abort(401)
         elif flask.request.method == 'POST':
-            item.name = flask.request.form['name']
+            try:
+                if flask.session['gplus_id'] == item.gplus_id:
+                    item.name = flask.request.form['name']
+                else:
+                    flask.abort(403)
+            except KeyError:
+                flask.abort(401)
             db_session.commit()
             return flask.redirect(flask.url_for('show_catalog_item',
                                                 category_name=category_name,
@@ -172,11 +188,23 @@ def load_controllers(app):
             flask.abort(404)
 
         if flask.request.method == 'GET':
-            return flask.render_template('delete_item.html',
-                                         category_name=category_name,
-                                         item=item)
+            try:
+                if flask.session['gplus_id'] == item.gplus_id:
+                    return flask.render_template('delete_item.html',
+                                                 category_name=category_name,
+                                                 item=item)
+                else:
+                    flask.abort(403)
+            except KeyError:
+                flask.abort(401)
         elif  flask.request.method == 'POST':
-            db_session.delete(item)
+            try:
+                if flask.session['gplus_id'] == item.gplus_id:
+                    db_session.delete(item)
+                else:
+                    flask.abort(403)
+            except KeyError:
+                flask.abort(401)
             db_session.commit()
             return flask.redirect(flask.url_for('show_category_items',
                                                 category_name=category_name))
