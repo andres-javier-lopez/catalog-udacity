@@ -1,7 +1,8 @@
 {% extends "main.html" %}
 {% block content %}
-    <form method="POST" action="{{ url_for('new_catalog_item', category_name=category_name) }}">
+    <form method="POST" action="{{ url_for('new_catalog_item', category_name=category_name) }}" enctype="multipart/form-data">
         <label>Name: </label><input type="text" name="name" placeceholder="Item name" /><br/>
+        <label>Imagen: </label><input type="file" name="file" /><br/>
         <br/>
         <button class="btn btn-default" type="submit">Create</button>
         <a class="btn btn-default" href="{{ url_for('show_category_items', category_name=category_name) }}">Cancel</a>

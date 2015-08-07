@@ -2,6 +2,9 @@
 {% block content %}
     <div>
     <h2>{{item.name}}</h2>
+    {% if item.image %}
+    <img src="{{item.image}}" alt="This is the picture" />
+    {% endif %}
     <p>Category: {{item.category.name}}</p>
     {% if session['credentials'] and session['gplus_id'] == item.gplus_id %}
     <a class="btn btn-default" href="{{ url_for('edit_catalog_item', category_name=category_name, item_id=item.id) }}">Edit</a>

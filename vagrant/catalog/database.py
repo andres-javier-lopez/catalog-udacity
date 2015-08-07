@@ -31,6 +31,7 @@ class Item(Base):
     id = sqla.Column(sqla.Integer, primary_key=True)
     name = sqla.Column(sqla.String(100), nullable=False)
     category_id = sqla.Column(sqla.ForeignKey('categories.id'), nullable=False)
+    image = sqla.Column(sqla.String(100))
     gplus_id = sqla.Column(sqla.String)
 
 

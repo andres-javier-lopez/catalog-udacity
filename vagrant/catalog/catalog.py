@@ -2,6 +2,7 @@
 import flask
 
 import database
+import file_upload
 
 def load_controllers(app):
     """Defines the controllers for the catalog module.
@@ -99,6 +100,7 @@ def load_controllers(app):
             ).one()
             try:
                 item = database.Item(name=flask.request.form['name'],
+                                     image=file_upload.save_upload(),
                                      gplus_id=flask.session['gplus_id'],
                                      category_id=category.id)
             except KeyError:
@@ -150,6 +152,10 @@ def load_controllers(app):
             try:
                 if flask.session['gplus_id'] == item.gplus_id:
                     item.name = flask.request.form['name']
+                    filename = file_upload.save_upload()
+                    if filename:
+                        file_upload.delete_upload(item.image)
+                        item.image = filename
                 else:
                     flask.abort(403)
             except KeyError:
@@ -200,6 +206,8 @@ def load_controllers(app):
         elif  flask.request.method == 'POST':
             try:
                 if flask.session['gplus_id'] == item.gplus_id:
+                    if item.image:
+                        file_upload.delete_upload(item.image)
                     db_session.delete(item)
                 else:
                     flask.abort(403)
