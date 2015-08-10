@@ -1,5 +1,4 @@
 #coding: utf-8
-
 import sqlalchemy as sqla
 from sqlalchemy import orm
 from sqlalchemy.ext import declarative
@@ -18,6 +17,13 @@ class Category(Base):
     items = orm.relationship('Item', backref="category")
     gplus_id = sqla.Column(sqla.String)
 
+    def get_json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'items': self.items
+        }
+
 class Item(Base):
     """Table that contains the items from the catalog.
 
@@ -33,6 +39,20 @@ class Item(Base):
     category_id = sqla.Column(sqla.ForeignKey('categories.id'), nullable=False)
     image = sqla.Column(sqla.String(100))
     gplus_id = sqla.Column(sqla.String)
+
+    def get_json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'image':  self.image
+        }
+
+
+def parseJSON(o):
+    if isinstance(o, Category) or isinstance(o, Item):
+        return o.get_json()
+    else:
+        raise TypeError('object is not json serializable')
 
 
 def get_engine():
