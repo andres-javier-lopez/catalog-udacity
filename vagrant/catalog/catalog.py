@@ -99,10 +99,13 @@ def load_controllers(app):
                 database.Category.name == category_name
             ).one()
             try:
-                item = database.Item(name=flask.request.form['name'],
-                                     image=file_upload.save_upload(),
-                                     gplus_id=flask.session['gplus_id'],
-                                     category_id=category.id)
+                item = database.Item(
+                    name=flask.request.form['name'],
+                    description=flask.request.form['description'],
+                    image=file_upload.save_upload(),
+                    gplus_id=flask.session['gplus_id'],
+                    category_id=category.id
+                )
             except KeyError:
                 flask.abort(401)
             db_session.add(item)
@@ -152,6 +155,7 @@ def load_controllers(app):
             try:
                 if flask.session['gplus_id'] == item.gplus_id:
                     item.name = flask.request.form['name']
+                    item.description = flask.request.form['description']
                     filename = file_upload.save_upload()
                     if filename:
                         file_upload.delete_upload(item.image)

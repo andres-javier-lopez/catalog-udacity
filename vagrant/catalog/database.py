@@ -36,14 +36,17 @@ class Item(Base):
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     name = sqla.Column(sqla.String(100), nullable=False)
+    description = sqla.Column(sqla.String, default='')
     category_id = sqla.Column(sqla.ForeignKey('categories.id'), nullable=False)
     image = sqla.Column(sqla.String(100))
+    datetime = sqla.Column(sqla.DateTime, default=sqla.func.now())
     gplus_id = sqla.Column(sqla.String)
 
     def get_json(self):
         return {
             'id': self.id,
             'name': self.name,
+            'description': self.description,
             'image':  self.image
         }
 
@@ -83,7 +86,9 @@ def fill_default_data():
     db_session.add(new_category)
 
     for item_name in default_items:
-        new_item = Item(name=item_name, category=new_category)
+        description = '%s is a color' % item_name
+        new_item = Item(name=item_name, description=description,
+                        category=new_category)
         db_session.add(new_item)
     db_session.commit()
 
