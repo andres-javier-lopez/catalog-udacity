@@ -1,7 +1,10 @@
 {% extends "main.html" %}
 {% block content %}
     <form method="POST" action="{{ url_for('new_category') }}" enctype="multipart/form-data">
-        <label>Name: </label><input type="text" name="name" placeceholder="Category name" /><br/>
+        <div class="form-group">
+            <label>Name: </label>
+            <input type="text" name="name" placeholder="Category name" class="form-control"/>
+        </div>
         <br/>
         <button class="btn btn-default" type="submit">Create</button>
         <a class="btn btn-default" href="{{ url_for('show_catalog') }}">Cancel</a>

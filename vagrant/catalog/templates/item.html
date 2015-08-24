@@ -4,7 +4,7 @@
     <h2>{{item.name}}</h2>
     <p>{{item.description}}</p>
     {% if item.image %}
-    <img src="{{item.image}}" alt="This is the picture" />
+    <img src="{{item.image}}" alt="This is the picture" class="scaled-img" />
     {% endif %}
     <p>Category: {{item.category.name}}</p>
     {% if session['credentials'] and (session['gplus_id'] == item.gplus_id or not item.gplus_id) %}

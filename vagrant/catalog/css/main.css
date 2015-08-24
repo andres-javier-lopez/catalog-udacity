@@ -11,3 +11,8 @@
     max-width: 100%;
     max-height: 120px;
 }
+
+.scaled-img {
+    max-height: 300px;
+    max-width: 400px;
+}

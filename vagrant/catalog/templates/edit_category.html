@@ -1,7 +1,10 @@
 {% extends "main.html" %}
 {% block content %}
     <form method="POST" action="{{ url_for('modify_category', category_id=category.id) }}" enctype="multipart/form-data">
-        <label>Name: </label><input type="text" name="name" value="{{category.name}}" /><br/>
+        <div class="form-group">
+            <label>Name: </label>
+            <input type="text" name="name" value="{{category.name}}" class="form-control" />
+        </div>
         <br/>
         <button class="btn btn-default" type="submit">Save</button>
         {% if not category.items %}
