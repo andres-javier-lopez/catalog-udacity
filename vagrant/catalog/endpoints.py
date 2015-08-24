@@ -4,7 +4,6 @@
 import json
 
 import flask
-import sqlalchemy as sqla
 from werkzeug.contrib import atom
 
 import database
@@ -36,11 +35,9 @@ def load_controllers(app):
         for item in items:
             feed.add(item.name, unicode(item.description),
                      content_type='html',
-                     url='%scatalog/%s/%d' % (
-                        flask.request.url_root,
-                        item.category.name,
-                        item.id
-                     ),
+                     url='%scatalog/%s/%d' % (flask.request.url_root,
+                                              item.category.name,
+                                              item.id),
                      updated=item.datetime,
                      published=item.datetime)
         return feed.get_response()

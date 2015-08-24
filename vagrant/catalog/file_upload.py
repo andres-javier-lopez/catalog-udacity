@@ -6,7 +6,7 @@ import os
 import flask
 import werkzeug as wkz
 
-import application
+import config
 
 
 def is_allowed(filename):
@@ -19,7 +19,7 @@ def is_allowed(filename):
         Return true if the name of the file is allowed.
     """
     return ('.' in filename and
-            filename.rsplit('.', 1)[1] in application.ALLOWED_EXTENSIONS)
+            filename.rsplit('.', 1)[1] in config.ALLOWED_EXTENSIONS)
 
 
 def save_upload():
@@ -28,11 +28,11 @@ def save_upload():
     Returns:
         The route of the uploaded file
     """
-    file = flask.request.files['file']
-    if file and is_allowed(file.filename):
-        filename = wkz.secure_filename(file.filename)
+    file_ = flask.request.files['file']
+    if file_ and is_allowed(file_.filename):
+        filename = wkz.secure_filename(file_.filename)
         here = os.path.dirname(__file__)
-        file.save(os.path.join(here, application.UPLOAD_FOLDER, filename))
+        file_.save(os.path.join(here, config.UPLOAD_FOLDER, filename))
         return flask.url_for('get_uploaded_file', filename=filename)
     else:
         return ''

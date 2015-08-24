@@ -1,4 +1,6 @@
 #coding: utf-8
+"""Database definition."""
+
 import sqlalchemy as sqla
 from sqlalchemy import orm
 from sqlalchemy.ext import declarative
@@ -53,6 +55,19 @@ class Item(Base):
 
 
 def parseJSON(o):
+    """Parser for database objects.
+
+    Convert database objects to a JSON version of them.
+
+    Args:
+        o: original object.
+
+    Returns:
+        JSON version of the object.
+
+    Raises:
+        TypeError: Raise an error if object cannot be converted.
+    """
     if isinstance(o, Category) or isinstance(o, Item):
         return o.get_json()
     else:
