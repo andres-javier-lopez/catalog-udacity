@@ -81,16 +81,34 @@ def create_database():
 def fill_default_data():
     '''Adds default data to de database.'''
     db_session = get_session()
-    default_items = ['red', 'blue', 'black', 'yellow', 'green']
 
-    new_category = Category(name='colors')
+    default_items = ['Red', 'Blue', 'Black', 'Yellow', 'Green']
+    new_category = Category(name='Colors')
     db_session.add(new_category)
-
     for item_name in default_items:
         description = '%s is a color' % item_name
         new_item = Item(name=item_name, description=description,
                         category=new_category)
         db_session.add(new_item)
+
+    default_items = ['Apple', 'Strawberry', 'Watermelon', 'Orange']
+    new_category = Category(name='Fruits')
+    db_session.add(new_category)
+    for item_name in default_items:
+        description = '%s is a fruit' % item_name
+        new_item = Item(name=item_name, description=description,
+                        category=new_category)
+        db_session.add(new_item)
+
+    default_items = ['Dog', 'Cat', 'Horse', 'Cow']
+    new_category = Category(name='Animals')
+    db_session.add(new_category)
+    for item_name in default_items:
+        description = '%s is an animal' % item_name
+        new_item = Item(name=item_name, description=description,
+                        category=new_category)
+        db_session.add(new_item)
+
     db_session.commit()
 
 

@@ -54,6 +54,8 @@ def load_controllers(app):
     def new_category():
         """Creates a new category.
 
+        You can only create a category if you are logged.
+
         Returns:
             An html form if its a GET request, or redirects to the main page if
             its a POST request.
@@ -83,6 +85,8 @@ def load_controllers(app):
     @app.route('/categories/<int:category_id>/edit', methods=['GET', 'POST'])
     def modify_category(category_id):
         """Modify the category.
+
+        You can only modify a category if you are logged.
 
         Args:
             category_id: Id of the category that will be modified.
@@ -116,7 +120,10 @@ def load_controllers(app):
 
     @app.route('/categories/<int:category_id>/delete', methods=['GET', 'POST'])
     def delete_category(category_id):
-        """Deletes the category if its empty.
+        """Deletes the category.
+
+        You can only delete a category if you are logged and the category is
+        empty.
 
         Args:
             category_id: Id of the category to be deleted.
@@ -200,7 +207,8 @@ def load_controllers(app):
         """Adds a new item to the chosen category.
 
         Shows a insert form if is a GET request, and inserts a new item to the
-        database on a POST request.
+        database on a POST request. You can only create an item if you are
+        logged.
 
         Args:
             category_name: Name of the category which the new item will belong.
@@ -249,8 +257,8 @@ def load_controllers(app):
         """Allows the edition of a catalog item.
 
         Shows an edit form if is a GET request, and changes the information of
-        the item if is a POST request.
-
+        the item if is a POST request. You can only edit an item if you were
+        the one that created it or if the item has no owner (gplus_id is None).
         Args:
             category_name: Name of the current category.
             item_id: Id of the item that will be edited.
@@ -274,7 +282,8 @@ def load_controllers(app):
 
         if flask.request.method == 'GET':
             try:
-                if flask.session['gplus_id'] == item.gplus_id:
+                if (flask.session['gplus_id'] == item.gplus_id
+                    or item.gplus_id is None):
                     categories = db_session.query(database.Category).all()
                     return flask.render_template('edit_item.html',
                                                  category_name=category_name,
@@ -286,7 +295,8 @@ def load_controllers(app):
                 flask.abort(401)
         elif flask.request.method == 'POST':
             try:
-                if flask.session['gplus_id'] == item.gplus_id:
+                if (flask.session['gplus_id'] == item.gplus_id
+                    or item.gplus_id is None):
                     item.name = flask.request.form['name']
                     item.description = flask.request.form['description']
                     filename = file_upload.save_upload()
@@ -309,7 +319,8 @@ def load_controllers(app):
         """Allows the deletion of a catalog item.
 
         Shows a delete confirmation in a GET request, and deletes the item on a
-        POST request.
+        POST request. You can only delete an item if you were the one that
+        created it or if the item has no owner (gplus_id is None).
 
         Args:
             category_name: Name of the current category.
@@ -334,7 +345,8 @@ def load_controllers(app):
 
         if flask.request.method == 'GET':
             try:
-                if flask.session['gplus_id'] == item.gplus_id:
+                if (flask.session['gplus_id'] == item.gplus_id
+                    or item.gplus_id is None):
                     categories = db_session.query(database.Category).all()
                     return flask.render_template('delete_item.html',
                                                  category_name=category_name,
@@ -346,7 +358,8 @@ def load_controllers(app):
                 flask.abort(401)
         elif  flask.request.method == 'POST':
             try:
-                if flask.session['gplus_id'] == item.gplus_id:
+                if (flask.session['gplus_id'] == item.gplus_id
+                    or item.gplus_id is None):
                     if item.image:
                         file_upload.delete_upload(item.image)
                     db_session.delete(item)
