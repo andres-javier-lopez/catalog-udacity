@@ -43,7 +43,12 @@ def load_controllers(app):
         prepare_login()
         categories = db_session.query(database.Category).all()
 
-        return flask.render_template('recent.html', categories=categories)
+        last_items = db_session.query(database.Item).order_by(
+            database.Item.datetime.desc()
+        ).limit(8).all()
+
+        return flask.render_template('recent.html', categories=categories,
+                                     items=last_items)
 
     @app.route('/categories/new', methods=['GET', 'POST'])
     def new_category():
@@ -286,7 +291,8 @@ def load_controllers(app):
                     item.description = flask.request.form['description']
                     filename = file_upload.save_upload()
                     if filename:
-                        file_upload.delete_upload(item.image)
+                        if item.image:
+                            file_upload.delete_upload(item.image)
                         item.image = filename
                 else:
                     flask.abort(403)

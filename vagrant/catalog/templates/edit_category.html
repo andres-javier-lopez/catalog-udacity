@@ -4,7 +4,9 @@
         <label>Name: </label><input type="text" name="name" value="{{category.name}}" /><br/>
         <br/>
         <button class="btn btn-default" type="submit">Save</button>
+        {% if not category.items %}
         <a class="btn btn-default" href="{{ url_for('delete_category', category_id=category.id) }}">Delete</a>
-        <a class="btn btn-default" href="{{ url_for('show_catalog') }}">Cancel</a>
+        {% endif %}
+        <a class="btn btn-default" href="{{ url_for('show_category_items', category_name=category.name) }}">Cancel</a>
     </form>
 {% endblock %}

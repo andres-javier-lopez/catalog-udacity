@@ -14,7 +14,8 @@ class Category(Base):
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     name = sqla.Column(sqla.String(100), nullable=False)
-    items = orm.relationship('Item', backref="category")
+    items = orm.relationship('Item', backref="category",
+                             order_by='Item.datetime.desc()')
     gplus_id = sqla.Column(sqla.String)
 
     def get_json(self):

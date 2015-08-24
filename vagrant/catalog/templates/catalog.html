@@ -2,7 +2,7 @@
 {% block content %}
     <br/>
     {% if session['credentials']: %}
-    <a href="{{ url_for('modify_category', category_id=category.id) }}" class="btn btn-default">Edit Category</a>
+    <a href="{{ url_for('new_catalog_item', category_name=category.name) }}" class="btn btn-default">Create new</a> <a href="{{ url_for('modify_category', category_id=category.id) }}" class="btn btn-default">Edit Category</a>
     {% endif %}
     <br/>
     <div class="row">
@@ -11,14 +11,11 @@
             <div class="inner">
                 <h3><a href="{{ url_for('show_catalog_item', category_name=category.name, item_id=item.id) }}">{{item.name}}</a></h3>
                 {% if item.image %}
-                <img style="width: 100%" src="{{item.image}}" />
+                <a href="{{ url_for('show_catalog_item', category_name=category.name, item_id=item.id) }}"><img src="{{item.image}}" /></a>
                 {% endif %}
                 <p>{{item.description}}</p>
             </div>
         </div>
     {% endfor %}
     </div>
-    {% if session['credentials']: %}
-    <a href="{{ url_for('new_catalog_item', category_name=category.name) }}" class="btn btn-default">Create new</a>
-    {% endif %}
 {% endblock %}

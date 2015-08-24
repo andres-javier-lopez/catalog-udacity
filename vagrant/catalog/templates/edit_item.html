@@ -3,7 +3,7 @@
     <form method="POST" action="{{ url_for('edit_catalog_item', category_name=category_name, item_id=item.id) }}" enctype="multipart/form-data">
         <label>Name: </label><input type="text" name="name" value="{{item.name}}" /><br/>
         <label>Description:</label><br/>
-        <textarea name="description"></textarea><br/><br/>
+        <textarea name="description">{{item.description}}</textarea><br/><br/>
         {% if item.image %}
         <img src="{{item.image}}" alt="The current image" /><br/>
         {% endif %}
