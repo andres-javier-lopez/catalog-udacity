@@ -21,7 +21,10 @@ def load_controllers(app):
 
     @app.route('/feed.atom')
     def atom_feed():
-        """Returns an atom feed with the latest items."""
+        """Returns an atom feed with the latest items.
+
+        Based on http://flask.pocoo.org/snippets/10/
+        """
         db_session = database.get_session()
         feed = atom.AtomFeed('Recently added items',
                              feed_url=flask.request.url,

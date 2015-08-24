@@ -2,6 +2,10 @@
 <head>
     <title>Welcome to my Catalog!</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//apis.google.com/js/platform.js?onload=start"> </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </head>
 <body>
     <div class="main container">
@@ -13,12 +17,68 @@
             <p>{{ session['username'] }}</p>
             <a href="{{ url_for('gdisconnect') }}">Logout</a>
             {% else %}
-            <a href="{{ url_for('showLogin') }}">Login</a>
+            <div id="signInButton">
+                <span class="g-signin"
+                  data-scope="openid email"
+                  data-clientid="72877182461-rtnaso5jqgj9jba98h7j5te6r23g7fko.apps.googleusercontent.com"
+                  data-redirecturi="postmessage"
+                  data-accesstype="offline"
+                  data-cookiepolicy="single_host_origin"
+                  data-callback="signInCallback"
+                  data-approvalprompt="force">
+                </span>
+            </div>
+            <div id="result"></div>
             {% endif %}
             </div>
         </header>
+        <nav>
+            <ul class="nav nav-tabs" role="tablist">
+                {% for category in categories %}
+                    <li><a role="presentation" role="tab" href="{{ url_for('show_category_items', category_name=category.name) }}">{{category.name}}</a></li>
+                {% endfor %}
+                {% if session['credentials'] %}
+                <li><a role="presentation" href="{{ url_for('new_category') }}">New Category</a></li>
+                {% endif %}
+            </ul>
+        </nav>
         {% block content %}
         {% endblock %}
     </div>
+<script>
+  (function(){
+    var url = window.location.pathname;
+    console.log(url);
+    $('a').filter('[href="' + url + '"]').parent().addClass('active');
+  })();
+
+  function signInCallback(authResult) {
+    if (authResult['code']) {
+      // Hide the sign-in button now that the user is authorized
+      $('#signInButton').attr('style', 'display: none');
+      // Send the one-time-use code to the server, if the server responds, write a 'login successful' message to the web page and then redirect back to the main restaurants page
+      $.ajax({
+        type: 'POST',
+        url: "/gconnect?state={{session['state']}}",
+        processData: false,
+        data: authResult['code'],
+        contentType: 'application/octet-stream; charset=utf-8',
+        success: function(result) {
+          // Handle or verify the server response if necessary.
+          if (result) {
+            $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+           setTimeout(function() {
+            window.location.href = "/catalog";
+           }, 4000);
+
+        } else if (authResult['error']) {
+      console.log('There was an error: ' + authResult['error']);
+    } else {
+          $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+           }
+        }
+
+    }); } }
+  </script>
 </body>
 </html>

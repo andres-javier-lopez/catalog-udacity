@@ -1,8 +1,19 @@
 #coding: utf-8
+import random
+import string
+
 import flask
 
 import database
 import file_upload
+
+def prepare_login():
+    """Configures the state needed for login."""
+    if 'state' not in flask.session:
+        state = ''.join(random.choice(
+            string.ascii_uppercase + string.digits
+        ) for x in xrange(32))
+        flask.session['state'] = state
 
 def load_controllers(app):
     """Defines the controllers for the catalog module.
@@ -11,6 +22,11 @@ def load_controllers(app):
     when the module is imported. This allow us to use the app decorators to
     define the routes.
     """
+
+    @app.route('/css/main.css')
+    def load_css():
+        """Loads the system css."""
+        return flask.send_from_directory('css', 'main.css')
 
     @app.route('/')
     @app.route('/catalog')
@@ -24,9 +40,108 @@ def load_controllers(app):
             Html template with the list of categories.
         """
         db_session = database.get_session()
-        catalog = db_session.query(database.Category).all()
+        prepare_login()
+        categories = db_session.query(database.Category).all()
 
-        return flask.render_template('categories.html', catalog=catalog)
+        return flask.render_template('recent.html', categories=categories)
+
+    @app.route('/categories/new', methods=['GET', 'POST'])
+    def new_category():
+        """Creates a new category.
+
+        Returns:
+            An html form if its a GET request, or redirects to the main page if
+            its a POST request.
+        """
+        if 'credentials' in flask.session:
+            if not flask.session['credentials']:
+                flask.abort(403)
+        else:
+            flask.abort(403)
+
+        db_session = database.get_session()
+        prepare_login()
+
+        if flask.request.method == 'GET':
+            return flask.render_template('new_category.html')
+        elif flask.request.method == 'POST':
+            try:
+                category = database.Category(
+                    name=flask.request.form['name']
+                )
+            except KeyError:
+                flask.abort(400)
+            db_session.add(category)
+            db_session.commit()
+            return flask.redirect(flask.url_for('show_catalog'))
+
+    @app.route('/categories/<int:category_id>/edit', methods=['GET', 'POST'])
+    def modify_category(category_id):
+        """Modify the category.
+
+        Args:
+            category_id: Id of the category that will be modified.
+
+        Returns:
+            An html form if its a GET request, or redirects to the main page if
+            its a POST request.
+        """
+        if 'credentials' in flask.session:
+            if not flask.session['credentials']:
+                flask.abort(403)
+        else:
+            flask.abort(403)
+
+        db_session = database.get_session()
+        prepare_login()
+        category = db_session.query(database.Category).get(category_id)
+        if category is None:
+            flask.abort(404)
+
+        if flask.request.method == 'GET':
+            return flask.render_template('edit_category.html',
+                                         category=category)
+        elif flask.request.method == 'POST':
+            try:
+                category.name = flask.request.form['name']
+            except KeyError:
+                flask.abort(400)
+            db_session.commit()
+            return flask.redirect(flask.url_for('show_catalog'))
+
+    @app.route('/categories/<int:category_id>/delete', methods=['GET', 'POST'])
+    def delete_category(category_id):
+        """Deletes the category if its empty.
+
+        Args:
+            category_id: Id of the category to be deleted.
+
+        Returns:
+            Return an html form if its a GET request, or redirects to the main
+            page if its a POST request.
+        """
+        if 'credentials' in flask.session:
+            if not flask.session['credentials']:
+                flask.abort(403)
+        else:
+            flask.abort(403)
+
+        db_session = database.get_session()
+        prepare_login()
+        category = db_session.query(database.Category).get(category_id)
+        if category is None:
+            flask.abort(404)
+
+        if flask.request.method == 'GET':
+            return flask.render_template('delete_category.html',
+                                         category=category)
+        elif flask.request.method == 'POST':
+            if not category.items:
+                db_session.delete(category)
+                db_session.commit()
+                return flask.redirect(flask.url_for('show_catalog'))
+            else:
+                flask.abort(500)
 
     @app.route('/catalog/<string:category_name>')
     def show_category_items(category_name):
@@ -39,11 +154,14 @@ def load_controllers(app):
             Html template with the list of items.
         """
         db_session = database.get_session()
+        prepare_login()
+        categories = db_session.query(database.Category).all()
         category = db_session.query(database.Category).filter(
             database.Category.name == category_name
         ).one()
 
         return flask.render_template('catalog.html', category=category,
+                                     categories=categories,
                                      catalog=category.items)
 
     @app.route('/catalog/<string:category_name>/<int:item_id>')
@@ -61,10 +179,13 @@ def load_controllers(app):
             Html with the item information.
         """
         db_session = database.get_session()
+        prepare_login()
+        categories = db_session.query(database.Category).all()
         item = db_session.query(database.Item).get(item_id)
         if item is not None:
             return flask.render_template('item.html',
                                          category_name=category_name,
+                                         categories=categories,
                                          item=item)
         else:
             flask.abort(404)
@@ -90,11 +211,15 @@ def load_controllers(app):
         else:
             flask.abort(403)
 
+        db_session = database.get_session()
+        prepare_login()
         if flask.request.method == 'GET':
+            categories = db_session.query(database.Category).all()
             return flask.render_template('new_item.html',
+                                         categories=categories,
                                          category_name=category_name)
         elif flask.request.method == 'POST':
-            db_session = database.get_session()
+            categories = db_session.query(database.Category).all()
             category = db_session.query(database.Category).filter(
                 database.Category.name == category_name
             ).one()
@@ -137,6 +262,7 @@ def load_controllers(app):
             flask.abort(403)
 
         db_session = database.get_session()
+        prepare_login()
         item = db_session.query(database.Item).get(item_id)
         if item is None:
             flask.abort(404)
@@ -144,8 +270,10 @@ def load_controllers(app):
         if flask.request.method == 'GET':
             try:
                 if flask.session['gplus_id'] == item.gplus_id:
+                    categories = db_session.query(database.Category).all()
                     return flask.render_template('edit_item.html',
                                                  category_name=category_name,
+                                                 categories=categories,
                                                  item=item)
                 else:
                     flask.abort(404)
@@ -193,6 +321,7 @@ def load_controllers(app):
             flask.abort(403)
 
         db_session = database.get_session()
+        prepare_login()
         item = db_session.query(database.Item).get(item_id)
         if item is None:
             flask.abort(404)
@@ -200,8 +329,10 @@ def load_controllers(app):
         if flask.request.method == 'GET':
             try:
                 if flask.session['gplus_id'] == item.gplus_id:
+                    categories = db_session.query(database.Category).all()
                     return flask.render_template('delete_item.html',
                                                  category_name=category_name,
+                                                 categories=categories,
                                                  item=item)
                 else:
                     flask.abort(403)

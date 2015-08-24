@@ -9,7 +9,7 @@
         {% endif %}
         <label>New image:</label><input type="file" name="file" /><br/>
         <br/>
-        <button class="btn btn-default" type="submit">Edit</button>
+        <button class="btn btn-default" type="submit">Save</button>
         <a class="btn btn-default" href="{{ url_for('show_catalog_item', category_name=category_name, item_id=item.id) }}">Cancel</a>
     </form>
 {% endblock %}

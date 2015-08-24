@@ -1,0 +1,10 @@
+{% extends "main.html" %}
+{% block content %}
+    <form method="POST" action="{{ url_for('modify_category', category_id=category.id) }}" enctype="multipart/form-data">
+        <label>Name: </label><input type="text" name="name" value="{{category.name}}" /><br/>
+        <br/>
+        <button class="btn btn-default" type="submit">Save</button>
+        <a class="btn btn-default" href="{{ url_for('delete_category', category_id=category.id) }}">Delete</a>
+        <a class="btn btn-default" href="{{ url_for('show_catalog') }}">Cancel</a>
+    </form>
+{% endblock %}

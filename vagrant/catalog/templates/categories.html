@@ -6,4 +6,5 @@
         <li><a href="{{ url_for('show_category_items', category_name=category.name) }}">{{category.name}}</a></li>
     {% endfor %}
     </ul>
+    <a href="{{ url_for() }}">New Category</a>
 {% endblock %}
