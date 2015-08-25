@@ -8,11 +8,11 @@ added items page.
 
 ## Section 2: Requirements
 The project runs with the following libraries:
-Flask == 0.10.1
-SQLAlchemy == 0.8.4
-Requests == 2.2.1
-oauth2client == 1.4.11
-werkzeug == 0.9.4
+* Flask == 0.10.1
+* SQLAlchemy == 0.8.4
+* Requests == 2.2.1
+* oauth2client == 1.4.11
+* werkzeug == 0.9.4
 
 This list is included in the _requirements.txt_ file. For an easy installation
 use `pip install -r requirements.txt`.
@@ -20,12 +20,12 @@ use `pip install -r requirements.txt`.
 ## Section 3: Installation
 To install and run the project run the following commands:
 
- `git clone https://github.com/odinjv/catalog-udacity.git`
- `cd catalog-udacity/vagrant`
- `vagrant up`
- `vagrant ssh`
- `cd /vagrant/catalog`
- `pip install -r requirements.txt`
+ 1. `git clone https://github.com/odinjv/catalog-udacity.git`
+ 2. `cd catalog-udacity/vagrant`
+ 3. `vagrant up`
+ 4. `vagrant ssh`
+ 5. `cd /vagrant/catalog`
+ 6. `pip install -r requirements.txt`
 
  You need to have vagrant already installed and configured.
 
