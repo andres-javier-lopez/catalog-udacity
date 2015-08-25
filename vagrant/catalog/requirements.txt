@@ -1,0 +1,5 @@
+flask == 0.10.1
+sqlalchemy == 0.8.4
+requests == 2.2.1
+oauth2client == 1.4.11
+werkzeug == 0.9.4
