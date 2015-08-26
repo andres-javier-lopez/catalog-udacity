@@ -285,8 +285,7 @@ def load_controllers(app):
 
         if flask.request.method == 'GET':
             try:
-                if (flask.session['gplus_id'] == item.gplus_id or
-                    item.gplus_id is None):
+                if (flask.session['gplus_id'] == item.gplus_id):
                     categories = db_session.query(database.Category).all()
                     return flask.render_template('edit_item.html',
                                                  category_name=category_name,
@@ -298,8 +297,7 @@ def load_controllers(app):
                 flask.abort(401)
         elif flask.request.method == 'POST':
             try:
-                if (flask.session['gplus_id'] == item.gplus_id or
-                    item.gplus_id is None):
+                if (flask.session['gplus_id'] == item.gplus_id):
                     item.name = flask.request.form['name']
                     item.description = flask.request.form['description']
                     filename = file_upload.save_upload()
@@ -348,8 +346,7 @@ def load_controllers(app):
 
         if flask.request.method == 'GET':
             try:
-                if (flask.session['gplus_id'] == item.gplus_id or
-                    item.gplus_id is None):
+                if (flask.session['gplus_id'] == item.gplus_id):
                     categories = db_session.query(database.Category).all()
                     return flask.render_template('delete_item.html',
                                                  category_name=category_name,
@@ -361,8 +358,7 @@ def load_controllers(app):
                 flask.abort(401)
         elif  flask.request.method == 'POST':
             try:
-                if (flask.session['gplus_id'] == item.gplus_id or
-                    item.gplus_id is None):
+                if (flask.session['gplus_id'] == item.gplus_id):
                     if item.image:
                         file_upload.delete_upload(item.image)
                     db_session.delete(item)
