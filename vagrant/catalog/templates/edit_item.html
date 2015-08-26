@@ -17,6 +17,7 @@
             <input type="file" name="file" class="form-control" />
         </div>
         <br/>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"/>
         <button class="btn btn-default" type="submit">Save</button>
         <a class="btn btn-default" href="{{ url_for('show_catalog_item', category_name=category_name, item_id=item.id) }}">Cancel</a>
     </form>

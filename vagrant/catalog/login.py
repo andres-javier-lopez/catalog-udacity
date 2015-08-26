@@ -14,7 +14,7 @@ import requests
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 
-def load_controllers(app):
+def load_controllers(app, csrf):
     """Defines the module controllers."""
 
     @app.route('/login')
@@ -26,6 +26,7 @@ def load_controllers(app):
         login_session['state'] = state
         return flask.render_template('login.html', STATE=state)
 
+    @csrf.exempt
     @app.route('/gconnect', methods=['POST'])
     def gconnect():
         """Process to login with google."""

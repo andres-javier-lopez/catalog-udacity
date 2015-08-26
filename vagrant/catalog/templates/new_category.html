@@ -6,6 +6,7 @@
             <input type="text" name="name" placeholder="Category name" class="form-control"/>
         </div>
         <br/>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"/>
         <button class="btn btn-default" type="submit">Create</button>
         <a class="btn btn-default" href="{{ url_for('show_catalog') }}">Cancel</a>
     </form>

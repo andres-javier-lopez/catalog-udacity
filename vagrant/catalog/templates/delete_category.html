@@ -2,6 +2,7 @@
 {% block content %}
     <form method="POST" action="{{ url_for('delete_category', category_id=category.id) }}">
         <p>Are you sure you want to delete {{category.name}}?</p>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"/>
         <button class="btn btn-default" type="submit">Yes</button>
         <a class="btn btn-default" href="{{ url_for('modify_category', category_id=category.id) }}">No</a>
     </form>

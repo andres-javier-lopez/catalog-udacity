@@ -9,6 +9,7 @@ added items page.
 ## Section 2: Requirements
 The project runs with the following libraries:
 * Flask == 0.10.1
+* Flask SeaSurf == 0.2.0
 * SQLAlchemy == 0.8.4
 * Requests == 2.2.1
 * oauth2client == 1.4.11

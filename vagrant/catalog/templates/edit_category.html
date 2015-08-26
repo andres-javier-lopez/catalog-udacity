@@ -6,6 +6,7 @@
             <input type="text" name="name" value="{{category.name}}" class="form-control" />
         </div>
         <br/>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"/>
         <button class="btn btn-default" type="submit">Save</button>
         {% if not category.items %}
         <a class="btn btn-default" href="{{ url_for('delete_category', category_id=category.id) }}">Delete</a>
