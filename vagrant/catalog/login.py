@@ -1,6 +1,6 @@
 # coding: utf-8
 """Defines the controllers for user login."""
-
+import os
 import httplib2
 import json
 import random
@@ -11,8 +11,10 @@ from flask import session as login_session
 from oauth2client import client
 import requests
 
+here = os.path.dirname(__file__)
+
 CLIENT_ID = json.loads(
-    open('client_secrets.json', 'r').read())['web']['client_id']
+    open(os.path.join(here, 'client_secrets.json'), 'r').read())['web']['client_id']
 
 def load_controllers(app, csrf):
     """Defines the module controllers."""
